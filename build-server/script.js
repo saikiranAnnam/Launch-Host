@@ -1,6 +1,18 @@
 const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+//iniatilze S3 client
+const s3Client = new S3Client({
+  region: "",
+  credentials: {
+    accessKeyId: "",
+    secretAccessKey: "",
+  },
+});
+
+const PROJECT_ID = process.env.PROJECT_ID;
 
 async function init() {
   console.log("Executing script.js");
@@ -33,8 +45,15 @@ async function init() {
       if (fs.lstatSync(filePath).isDirectory()) continue;
 
       // upload file in the S3 - storage
+      const command = new PutObjectCommand({
+        Bucket: "",
+        Key: `__outputs/${PROJECT_ID}/${filePath}`,
+        Body: fs.createReadStream(filePath),
+        ContentType: mime.lookup(filePath), //evaluating the user content types dynamically with mime-types
+      });
       
-
+      await s3Client.send(command)
     }
+    console.log('Done...')
   });
 }
