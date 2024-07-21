@@ -5,7 +5,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
 //iniatilze S3 client
 const s3Client = new S3Client({
-  region: "",
+  region: "eu-north-1",
   credentials: {
     accessKeyId: "",
     secretAccessKey: "",
@@ -46,7 +46,7 @@ async function init() {
 
       // upload file in the S3 - storage
       const command = new PutObjectCommand({
-        Bucket: "",
+        Bucket: "launch-host",
         Key: `__outputs/${PROJECT_ID}/${filePath}`,
         Body: fs.createReadStream(filePath),
         ContentType: mime.lookup(filePath), //evaluating the user content types dynamically with mime-types
